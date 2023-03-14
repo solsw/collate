@@ -7,11 +7,11 @@ type Equaler[T any] interface {
 	Equal(T, T) bool
 }
 
-// The EqualerFunc type is an adapter to allow the use of ordinary functions as an Equaler.
-// If f is a function with the appropriate signature, EqualerFunc(f) is an Equaler that calls f.
+// The EqualerFunc type is an adapter to allow the use of ordinary functions as an [Equaler].
+// If f is a function with the appropriate signature, EqualerFunc(f) is an [Equaler] that calls f.
 type EqualerFunc[T any] func(T, T) bool
 
-// Equal implements the Equaler interface.
+// Equal implements the [Equaler] interface.
 func (eqf EqualerFunc[T]) Equal(x, y T) bool {
 	return eqf(x, y)
 }

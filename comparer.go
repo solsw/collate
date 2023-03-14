@@ -9,22 +9,22 @@ type Comparer[T any] interface {
 	Compare(T, T) int
 }
 
-// The ComparerFunc type is an adapter to allow the use of ordinary functions as a Comparer.
-// If f is a function with the appropriate signature, ComparerFunc(f) is a Comparer that calls f.
-// ComparerFunc also implements the Equaler and Lesser interfaces.
+// The ComparerFunc type is an adapter to allow the use of ordinary functions as a [Comparer].
+// If f is a function with the appropriate signature, ComparerFunc(f) is a [Comparer] that calls f.
+// ComparerFunc also implements the [Equaler] and [Lesser] interfaces.
 type ComparerFunc[T any] func(T, T) int
 
-// Compare implements the Comparer interface.
+// Compare implements the [Comparer] interface.
 func (cmpf ComparerFunc[T]) Compare(x, y T) int {
 	return cmpf(x, y)
 }
 
-// Equal implements the Equaler interface.
+// Equal implements the [Equaler] interface.
 func (cmpf ComparerFunc[T]) Equal(x, y T) bool {
 	return cmpf.Compare(x, y) == 0
 }
 
-// Less implements the Lesser interface.
+// Less implements the [Lesser] interface.
 func (cmpf ComparerFunc[T]) Less(x, y T) bool {
 	return cmpf.Compare(x, y) < 0
 }
