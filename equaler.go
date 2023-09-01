@@ -3,7 +3,7 @@ package collate
 // Equaler defines a function to compare the objects of type T for equality.
 type Equaler[T any] interface {
 
-	// Equal determines whether the specified objects are equal.
+	// Equal reports whether the specified objects are equal.
 	Equal(T, T) bool
 }
 

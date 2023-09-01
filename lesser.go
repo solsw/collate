@@ -3,7 +3,7 @@ package collate
 // Lesser defines a function to compare the specified objects of type T.
 type Lesser[T any] interface {
 
-	// Less determines whether the first object is less than the second.
+	// Less reports whether the first object is less than the second.
 	Less(T, T) bool
 }
 
