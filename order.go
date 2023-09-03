@@ -16,16 +16,10 @@ func (Order[T]) Equal(x, y T) bool {
 
 // Less implements the [Lesser] interface.
 func (Order[T]) Less(x, y T) bool {
-	return x < y
+	return cmp.Less(x, y)
 }
 
 // Compare implements the [Comparer] interface.
 func (Order[T]) Compare(x, y T) int {
-	if x < y {
-		return -1
-	}
-	if x > y {
-		return +1
-	}
-	return 0
+	return cmp.Compare(x, y)
 }
