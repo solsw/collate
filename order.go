@@ -1,11 +1,13 @@
 package collate
 
 import (
-	"golang.org/x/exp/constraints"
+	"cmp"
 )
 
-// The Order type implements the [Equaler], [Lesser] and [Comparer] interfaces for ordered types.
-type Order[T constraints.Ordered] struct{}
+// The Order type implements the [Equaler], [Lesser] and [Comparer] interfaces for [ordered] types.
+//
+// [ordered]: https://pkg.go.dev/cmp#Ordered
+type Order[T cmp.Ordered] struct{}
 
 // Equal implements the [Equaler] interface.
 func (Order[T]) Equal(x, y T) bool {
