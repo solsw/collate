@@ -1,6 +1,7 @@
 package collate
 
 import (
+	"cmp"
 	"strings"
 )
 
@@ -27,18 +28,10 @@ func CaseInsensitiveEqual(s1, s2 string) bool {
 
 // CaseInsensitiveLess reports whether the string 's1' is case-insensitively less than 's2'.
 func CaseInsensitiveLess(s1, s2 string) bool {
-	return strings.ToLower(s1) < strings.ToLower(s2)
+	return cmp.Less(strings.ToLower(s1), strings.ToLower(s2))
 }
 
 // CaseInsensitiveCompare compares case-insensitively the specified strings.
 func CaseInsensitiveCompare(s1, s2 string) int {
-	ls1 := strings.ToLower(s1)
-	ls2 := strings.ToLower(s2)
-	if ls1 < ls2 {
-		return -1
-	}
-	if ls1 > ls2 {
-		return +1
-	}
-	return 0
+	return cmp.Compare(strings.ToLower(s1), strings.ToLower(s2))
 }
