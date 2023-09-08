@@ -12,22 +12,22 @@ type Lesser[T any] interface {
 // LesserFunc also implements the [Equaler] and [Comparer] interfaces.
 type LesserFunc[T any] func(T, T) bool
 
-// Less implements the [Lesser] interface.
-func (lsf LesserFunc[T]) Less(x, y T) bool {
-	return lsf(x, y)
-}
-
 // Equal implements the [Equaler] interface.
 func (lsf LesserFunc[T]) Equal(x, y T) bool {
 	return lsf.Compare(x, y) == 0
 }
 
+// Less implements the [Lesser] interface.
+func (lsf LesserFunc[T]) Less(x, y T) bool {
+	return lsf(x, y)
+}
+
 // Compare implements the [Comparer] interface.
 func (lsf LesserFunc[T]) Compare(x, y T) int {
-	if lsf.Less(x, y) {
+	if lsf(x, y) {
 		return -1
 	}
-	if lsf.Less(y, x) {
+	if lsf(y, x) {
 		return +1
 	}
 	return 0

@@ -32,6 +32,7 @@ func CaseInsensitiveLess(s1, s2 string) bool {
 }
 
 // CaseInsensitiveCompare compares case-insensitively the specified strings.
+// (See [Comparer.Compare] for return values.)
 func CaseInsensitiveCompare(s1, s2 string) int {
 	return cmp.Compare(strings.ToLower(s1), strings.ToLower(s2))
 }

@@ -24,6 +24,7 @@ func TimeLess(t1, t2 time.Time) bool {
 }
 
 // TimeCompare compares the specified time instants.
+// (See [Comparer.Compare] for return values.)
 func TimeCompare(t1, t2 time.Time) int {
 	return t1.Compare(t2)
 }
