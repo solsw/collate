@@ -4,7 +4,7 @@ import (
 	"cmp"
 )
 
-// The Order type implements the [Equaler], [Lesser] and [Comparer] interfaces for [ordered] types.
+// Order type implements the [Equaler], [Lesser] and [Comparer] interfaces for [ordered] types.
 //
 // [ordered]: https://pkg.go.dev/cmp#Ordered
 type Order[T cmp.Ordered] struct{}

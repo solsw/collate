@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestCaseInsensitiveEqual(t *testing.T) {
+func TestCaseInsensitiveOrder_Equal(t *testing.T) {
 	type args struct {
 		s1 string
 		s2 string
@@ -31,14 +31,14 @@ func TestCaseInsensitiveEqual(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CaseInsensitiveEqual(tt.args.s1, tt.args.s2); got != tt.want {
-				t.Errorf("CaseInsensitiveEqual() = %v, want %v", got, tt.want)
+			if got := CaseInsensitiveOrder.Equal(tt.args.s1, tt.args.s2); got != tt.want {
+				t.Errorf("CaseInsensitiveOrder.Equal() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestCaseInsensitiveLess(t *testing.T) {
+func TestCaseInsensitiveOrder_Less(t *testing.T) {
 	type args struct {
 		s1 string
 		s2 string
@@ -65,14 +65,14 @@ func TestCaseInsensitiveLess(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CaseInsensitiveLess(tt.args.s1, tt.args.s2); got != tt.want {
-				t.Errorf("CaseInsensitiveLess() = %v, want %v", got, tt.want)
+			if got := CaseInsensitiveOrder.Less(tt.args.s1, tt.args.s2); got != tt.want {
+				t.Errorf("CaseInsensitiveOrder.Less() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestCaseInsensitiveCompare(t *testing.T) {
+func TestCaseInsensitiveOrder_Compare(t *testing.T) {
 	type args struct {
 		s1 string
 		s2 string
@@ -120,8 +120,8 @@ func TestCaseInsensitiveCompare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CaseInsensitiveCompare(tt.args.s1, tt.args.s2); got != tt.want {
-				t.Errorf("CaseInsensitiveCompare() = %v, want %v", got, tt.want)
+			if got := CaseInsensitiveOrder.Compare(tt.args.s1, tt.args.s2); got != tt.want {
+				t.Errorf("CaseInsensitiveOrder.Compare() = %v, want %v", got, tt.want)
 			}
 		})
 	}
