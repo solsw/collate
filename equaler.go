@@ -1,6 +1,7 @@
 package collate
 
 import (
+	"maps"
 	"reflect"
 )
 
@@ -27,3 +28,16 @@ type DeepEqualer[T any] struct{}
 func (DeepEqualer[T]) Equal(x, y T) bool {
 	return reflect.DeepEqual(x, y)
 }
+
+// MapEqualer type implements the [Equaler] interface for [map]s.
+//
+// [map]: https://go.dev/ref/spec#Map_types
+type MapEqualer[M ~map[K]V, K, V comparable] struct{}
+
+// Equal implements the [Equaler] interface.
+func (MapEqualer[M, K, V]) Equal(m1, m2 M) bool {
+	return maps.Equal[M, M, K, V](m1, m2)
+}
+
+// check that MapEqualer implements the Equaler interface
+var _ Equaler[map[int]string] = MapEqualer[map[int]string, int, string]{}
