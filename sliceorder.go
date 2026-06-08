@@ -14,15 +14,22 @@ type SliceOrder[S ~[]E, E cmp.Ordered] struct{}
 
 // Equal implements the [Equaler] interface.
 func (SliceOrder[S, E]) Equal(x, y S) bool {
-	return slices.Equal[S, E](x, y)
+	return slices.Equal(x, y)
 }
 
 // Less implements the [Lesser] interface.
 func (SliceOrder[S, E]) Less(x, y S) bool {
-	return slices.Compare[S, E](x, y) < 0
+	return slices.Compare(x, y) < 0
 }
 
 // Compare implements the [Comparer] interface.
 func (SliceOrder[S, E]) Compare(x, y S) int {
-	return slices.Compare[S, E](x, y)
+	return slices.Compare(x, y)
 }
+
+// check that SliceOrder implements the Equaler, Lesser and Comparer interfaces
+var (
+	_ Equaler[[]int]  = SliceOrder[[]int, int]{}
+	_ Lesser[[]int]   = SliceOrder[[]int, int]{}
+	_ Comparer[[]int] = SliceOrder[[]int, int]{}
+)

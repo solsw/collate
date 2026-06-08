@@ -1,6 +1,6 @@
 package collate
 
-// Lesser defines a function to compare the specified objects of type T.
+// Lesser is an interface that reports whether one object of type T is less than another.
 type Lesser[T any] interface {
 
 	// Less reports whether the first object is less than the second.
@@ -32,3 +32,10 @@ func (lsf LesserFunc[T]) Compare(x, y T) int {
 	}
 	return 0
 }
+
+// check that LesserFunc implements the Equaler, Lesser and Comparer interfaces
+var (
+	_ Equaler[int]  = LesserFunc[int](nil)
+	_ Lesser[int]   = LesserFunc[int](nil)
+	_ Comparer[int] = LesserFunc[int](nil)
+)

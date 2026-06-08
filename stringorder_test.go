@@ -4,6 +4,75 @@ import (
 	"testing"
 )
 
+func TestStringOrder_Equal(t *testing.T) {
+	type args struct {
+		x string
+		y string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{name: "equal", args: args{x: "qwerty", y: "qwerty"}, want: true},
+		{name: "case differs", args: args{x: "qwerty", y: "qWERTy"}, want: false},
+		{name: "not equal", args: args{x: "qwerty", y: "qwert"}, want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := (StringOrder{}).Equal(tt.args.x, tt.args.y); got != tt.want {
+				t.Errorf("StringOrder.Equal() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStringOrder_Less(t *testing.T) {
+	type args struct {
+		x string
+		y string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{name: "equal", args: args{x: "qwerty", y: "qwerty"}, want: false},
+		{name: "less", args: args{x: "qwert", y: "qwerty"}, want: true},
+		{name: "greater", args: args{x: "qwerty", y: "qwert"}, want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := (StringOrder{}).Less(tt.args.x, tt.args.y); got != tt.want {
+				t.Errorf("StringOrder.Less() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStringOrder_Compare(t *testing.T) {
+	type args struct {
+		x string
+		y string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{name: "equal", args: args{x: "qwerty", y: "qwerty"}, want: 0},
+		{name: "less", args: args{x: "qwert", y: "qwerty"}, want: -1},
+		{name: "greater", args: args{x: "qwerty", y: "qwert"}, want: 1},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := (StringOrder{}).Compare(tt.args.x, tt.args.y); got != tt.want {
+				t.Errorf("StringOrder.Compare() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestCaseInsensitiveOrder_Equal(t *testing.T) {
 	type args struct {
 		s1 string

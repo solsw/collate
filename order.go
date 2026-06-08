@@ -23,3 +23,10 @@ func (Order[T]) Less(x, y T) bool {
 func (Order[T]) Compare(x, y T) int {
 	return cmp.Compare(x, y)
 }
+
+// check that Order implements the Equaler, Lesser and Comparer interfaces
+var (
+	_ Equaler[int]  = Order[int]{}
+	_ Lesser[int]   = Order[int]{}
+	_ Comparer[int] = Order[int]{}
+)

@@ -1,6 +1,6 @@
 package collate
 
-// Comparer defines a function to compare the specified objects of type T.
+// Comparer is an interface that compares two objects of type T.
 type Comparer[T any] interface {
 
 	// Compare compares the specified objects and returns negative if the first one is less than the second,
@@ -27,3 +27,10 @@ func (cmpf ComparerFunc[T]) Less(x, y T) bool {
 func (cmpf ComparerFunc[T]) Compare(x, y T) int {
 	return cmpf(x, y)
 }
+
+// check that ComparerFunc implements the Equaler, Lesser and Comparer interfaces
+var (
+	_ Equaler[int]  = ComparerFunc[int](nil)
+	_ Lesser[int]   = ComparerFunc[int](nil)
+	_ Comparer[int] = ComparerFunc[int](nil)
+)
