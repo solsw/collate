@@ -45,17 +45,18 @@ information is available:
 | [`ComparerFunc[T]`](https://github.com/solsw/collate/blob/main/comparer.go) | `func(T, T) int` | `Equaler`, `Lesser`, `Comparer` |
 
 Because `ComparerFunc` carries full ordering information, it can derive both
-`Equal` and `Less`. `LesserFunc` derives `Compare` by calling the function twice
-(`x < y` and `y < x`) and `Equal` from that.
+`Equal` and `Less`. `LesserFunc` requires a strict weak ordering. It treats two
+values as equal when neither is less than the other. Use `cmp.Less` for
+floating-point values that may include NaN.
 
 ## Ready-made implementations
 
 | Type / value | Works on | Notes |
 | --- | --- | --- |
-| [`Order[T cmp.Ordered]`](https://github.com/solsw/collate/blob/main/order.go) | ordered types | wraps `cmp.Less` / `cmp.Compare` |
-| [`SliceOrder[S ~[]E, E cmp.Ordered]`](https://github.com/solsw/collate/blob/main/sliceorder.go) | slices of ordered elements | wraps `slices.Equal` / `slices.Compare` |
+| [`Order[T cmp.Ordered]`](https://github.com/solsw/collate/blob/main/order.go) | ordered types | uses `cmp` ordering, with NaNs equal to each other |
+| [`SliceOrder[S ~[]E, E cmp.Ordered]`](https://github.com/solsw/collate/blob/main/sliceorder.go) | slices of ordered elements | uses `slices.Compare` for lexicographic ordering and equality |
 | [`StringOrder`](https://github.com/solsw/collate/blob/main/stringorder.go) | strings | optional `Mapping func(string) string` applied before comparison |
-| [`CaseInsensitiveOrder`](https://github.com/solsw/collate/blob/main/stringorder.go) | strings | a `StringOrder` using `strings.ToLower` |
+| [`CaseInsensitiveOrder`](https://github.com/solsw/collate/blob/main/stringorder.go) | strings | uses Unicode simple case folding, with the same equality as `strings.EqualFold` |
 | [`DeepEqualer[T]`](https://github.com/solsw/collate/blob/main/equaler.go) | any type | wraps `reflect.DeepEqual` (`Equaler` only) |
 | [`MapEqualer[M ~map[K]V, K, V comparable]`](https://github.com/solsw/collate/blob/main/equaler.go) | maps | wraps `maps.Equal` (`Equaler` only) |
 | [`TimeEqualer` / `TimeLesser` / `TimeComparer`](https://github.com/solsw/collate/blob/main/time.go) | `time.Time` | use `Time.Equal` / `Before` / `Compare` |
@@ -71,10 +72,26 @@ o.Equal(2, 2)   // true
 o.Compare(3, 2) // +1
 ```
 
+For floating-point values, NaNs compare equal to each other and sort before
+every other value, including negative infinity.
+
+```go
+var floats collate.Order[float64]
+nan := math.NaN()
+floats.Equal(nan, nan)         // true
+floats.Compare(nan, nan)       // 0
+floats.Less(nan, math.Inf(-1)) // true
+```
+
 ### Case-insensitive strings
+
+Unicode simple case folding groups all three forms of Greek sigma together.
+The same folding applies when testing equality and when sorting strings.
 
 ```go
 collate.CaseInsensitiveOrder.Equal("Go", "go") // true
+collate.CaseInsensitiveOrder.Equal("Σ", "ς")   // true
+collate.CaseInsensitiveOrder.Compare("ς", "σ") // 0
 
 // Custom mapping (e.g. trim before comparing).
 so := collate.StringOrder{Mapping: strings.TrimSpace}
@@ -89,6 +106,16 @@ so.Equal([]int{1, 2}, []int{1, 2})   // true
 so.Compare([]int{1, 2}, []int{1, 3}) // -1
 ```
 
+In a slice of floats, matching NaNs compare equal element by element.
+The next differing element determines the order.
+
+```go
+var so collate.SliceOrder[[]float64, float64]
+x := []float64{math.NaN(), 1}
+so.Equal(x, []float64{math.NaN(), 1})   // true
+so.Compare(x, []float64{math.NaN(), 2}) // -1
+```
+
 ### Adapting a function
 
 ```go
@@ -98,6 +125,15 @@ byLen := collate.ComparerFunc[string](func(a, b string) int {
 })
 byLen.Less("ab", "abc") // true
 byLen.Equal("ab", "cd") // true (same length)
+```
+
+For a `LesserFunc` over floats, `cmp.Less` supplies the required strict weak
+ordering even when the input contains NaN.
+
+```go
+byValue := collate.LesserFunc[float64](cmp.Less[float64])
+byValue.Compare(math.NaN(), 0)        // -1
+byValue.Equal(math.NaN(), math.NaN()) // true
 ```
 
 ### Time

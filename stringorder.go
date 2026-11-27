@@ -2,6 +2,7 @@ package collate
 
 import (
 	"strings"
+	"unicode"
 )
 
 // StringOrder type implements the [Equaler], [Lesser] and [Comparer] interfaces
@@ -38,8 +39,29 @@ func (so StringOrder) Compare(x, y string) int {
 	return strings.Compare(x, y)
 }
 
-// CaseInsensitiveOrder is a case-insensitive [StringOrder].
-var CaseInsensitiveOrder = StringOrder{strings.ToLower}
+// CaseInsensitiveOrder uses Unicode simple case folding, so its Equal method
+// agrees with [strings.EqualFold].
+var CaseInsensitiveOrder = StringOrder{Mapping: func(s string) string {
+	return strings.Map(foldRune, s)
+}}
+
+func foldRune(r rune) rune {
+	if r <= unicode.MaxASCII {
+		return unicode.ToLower(r)
+	}
+	// Pick the smallest lowercase member of the fold class when possible.
+	// If the class has no lowercase member, use its smallest rune.
+	best := r
+	for member := unicode.SimpleFold(r); member != r; member = unicode.SimpleFold(member) {
+		lower := unicode.IsLower(member)
+		if lower == unicode.IsLower(best) {
+			best = min(best, member)
+		} else if lower {
+			best = member
+		}
+	}
+	return best
+}
 
 // check that StringOrder implements the Equaler, Lesser and Comparer interfaces
 var (

@@ -4,6 +4,31 @@ import (
 	"testing"
 )
 
+func TestCaseInsensitiveOrder_Unicode(t *testing.T) {
+	for _, tt := range []struct {
+		x, y string
+		want int
+	}{
+		{"Σ", "ς", 0},
+		{"ς", "σ", 0},
+		{"ſ", "S", 0},
+		{"Σa", "ςb", -1},
+		{"İ", "i", 1},
+		{"[", "A", -1}, // Preserve lowercase ASCII ordering around punctuation.
+	} {
+		order := CaseInsensitiveOrder
+		if got := order.Compare(tt.x, tt.y); got != tt.want {
+			t.Errorf("Compare(%q, %q) = %d, want %d", tt.x, tt.y, got, tt.want)
+		}
+		if got := order.Equal(tt.x, tt.y); got != (tt.want == 0) {
+			t.Errorf("Equal(%q, %q) = %t", tt.x, tt.y, got)
+		}
+		if got := order.Less(tt.x, tt.y); got != (tt.want < 0) {
+			t.Errorf("Less(%q, %q) = %t", tt.x, tt.y, got)
+		}
+	}
+}
+
 func TestStringOrder_Equal(t *testing.T) {
 	type args struct {
 		x string

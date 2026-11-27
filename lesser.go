@@ -10,6 +10,9 @@ type Lesser[T any] interface {
 // The LesserFunc type is an adapter to allow the use of ordinary functions as a [Lesser].
 // If f is a function with the appropriate signature, LesserFunc(f) is a [Lesser] that calls f.
 // LesserFunc also implements the [Equaler] and [Comparer] interfaces.
+// The function must define a strict weak ordering. Two values compare equal
+// when neither is less than the other. For floats that may include NaN,
+// use [cmp.Less] to satisfy this requirement.
 type LesserFunc[T any] func(T, T) bool
 
 // Equal implements the [Equaler] interface.

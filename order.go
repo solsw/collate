@@ -5,13 +5,14 @@ import (
 )
 
 // Order type implements the [Equaler], [Lesser] and [Comparer] interfaces for [ordered] types.
+// Floating-point NaNs compare equal to each other and sort before other values.
 //
 // [ordered]: https://pkg.go.dev/cmp#Ordered
 type Order[T cmp.Ordered] struct{}
 
 // Equal implements the [Equaler] interface.
-func (Order[T]) Equal(x, y T) bool {
-	return x == y
+func (o Order[T]) Equal(x, y T) bool {
+	return o.Compare(x, y) == 0
 }
 
 // Less implements the [Lesser] interface.

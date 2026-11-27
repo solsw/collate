@@ -1,8 +1,16 @@
 package collate
 
 import (
+	"math"
 	"testing"
 )
+
+func TestOrder_EqualNaN(t *testing.T) {
+	order := Order[float64]{}
+	if !order.Equal(math.NaN(), math.NaN()) || order.Equal(math.NaN(), 0) {
+		t.Error("NaN should equal another NaN and differ from zero")
+	}
+}
 
 func TestOrder_Equal(t *testing.T) {
 	type args struct {

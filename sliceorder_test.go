@@ -1,8 +1,20 @@
 package collate
 
 import (
+	"math"
 	"testing"
 )
+
+func TestSliceOrder_EqualNaN(t *testing.T) {
+	order := SliceOrder[[]float64, float64]{}
+	x := []float64{math.NaN(), 1}
+	if !order.Equal(x, []float64{math.NaN(), 1}) {
+		t.Error("matching NaN elements should compare equal")
+	}
+	if order.Equal(x, []float64{math.NaN(), 2}) {
+		t.Error("elements after matching NaNs should still be compared")
+	}
+}
 
 func TestSliceOrder_Equal(t *testing.T) {
 	type args struct {
